@@ -405,7 +405,7 @@ sub changes_between {
     5.037010 => '2023-03-20',
     5.037011 => '2023-04-20',
     5.036001 => '2023-04-23',
-    5.038000 => '2023-06-20',
+    5.038000 => '2023-06-30',
   );
 
 for my $version ( sort { $a <=> $b } keys %released ) {
@@ -20313,6 +20313,7 @@ for my $version ( sort { $a <=> $b } keys %released ) {
             'ExtUtils::Typemaps::OutputMap'=> '3.51',
             'ExtUtils::Typemaps::Type'=> '3.51',
             'File::Glob'            => '1.40',
+            'HTTP::Tiny'            => '0.086',
             'IO'                    => '1.52',
             'IO::Dir'               => '1.52',
             'IO::File'              => '1.52',
@@ -20323,6 +20324,7 @@ for my $version ( sort { $a <=> $b } keys %released ) {
             'IO::Select'            => '1.52',
             'IO::Socket'            => '1.52',
             'IO::Socket::INET'      => '1.52',
+            'IO::Socket::IP'        => '0.41_01',
             'IO::Socket::UNIX'      => '1.52',
             'MIME::Base64'          => '3.16_01',
             'MIME::QuotedPrint'     => '3.16_01',

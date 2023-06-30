@@ -112,7 +112,7 @@ See L<perlrun>. This feature can be disabled at compile time by passing
 
 to F<Configure> during the build process.
 
-=head2 Defined-or and logical-or assignment default expressions to signatures
+=head2 Defined-or and logical-or assignment default expressions in signatures
 
 The default expression for a subroutine signature parameter can now be
 assigned using the C<//=> or C<||=> operators, to apply the defaults whenever
@@ -179,10 +179,10 @@ the pattern will stay O(N).
 
 =head2 REG_INF has been raised from 65,536 to 2,147,483,647
 
-Many regex quantifiers used to be limited to U16_MAX in the past, but are
-now limited to I32_MAX, thus it is now possible to write /(?:word){1000000}/
-for example.  Note that doing so may cause the regex engine to run longer
-and use more memory.
+Many regex quantifiers used to be limited to C<U16_MAX> in the past, but are
+now limited to C<I32_MAX>, thus it is now possible to write
+C</(?:word){1000000}/> for example.  Note that doing so may cause the regex
+engine to run longer and use more memory.
 
 =head2 New API functions optimize_optree and finalize_optree
 
@@ -296,13 +296,13 @@ precedence.
 [L<GH #1537|https://github.com/Perl/perl5/issues/1537>]
 [L<GH #20181|https://github.com/Perl/perl5/issues/20181>]
 
-=head2 Syntax errors will no longer produce "phantom error messages".
+=head2 Syntax errors no longer produce "phantom error messages"
 
 Generally perl will continue parsing the source code even after
 encountering a compile error. In many cases this is helpful, for
 instance with misspelled variable names it is helpful to show as many
 examples of the error as possible. But in the case of syntax errors
-continuing often produces bizarre error messages, and may even cause
+continuing often produces bizarre error messages and may even cause
 segmentation faults during the compile process. In this release the
 compiler will halt at the first syntax error encountered. This means
 that any code expecting to see the specific error messages we used to
@@ -356,6 +356,20 @@ string has warned since 5.28.  It is now deprecated in both string
 interpolation and non-interpolated contexts, and will be removed in
 Perl 5.42.
 
+=head2 Switch and Smart Match operator
+
+The "switch" feature and the smartmatch operator, C<~~>, were introduced in
+v5.10.  Their behavior was significantly changed in v5.10.1.  When the
+"experiment" system was added in v5.18.0, switch and smartmatch were
+retroactively declared experimental.  Over the years, proposals to fix or
+supplement the features have come and gone.
+
+In v5.38.0, we are declaring the experiment a failure.  Some future system may
+take the conceptual place of smartmatch, but it has not yet been designed or
+built.  
+
+These features will be entirely removed from perl in v5.42.0.
+
 =head1 Performance Enhancements
 
 =over 4
@@ -364,15 +378,15 @@ Perl 5.42.
 
 Additional optree optimizations for common OP patterns. For example, multiple
 simple OPs replaced by a single streamlined OP, so as to be more efficient at
-runtime. L<[GH #19943]|https://github.com/Perl/perl5/pull/19943>,
-L<[GH #20063]|https://github.com/Perl/perl5/pull/20063>,
-L<[GH #20077]|https://github.com/Perl/perl5/pull/20077>.
+runtime. [L<GH #19943|https://github.com/Perl/perl5/pull/19943>],
+[L<GH #20063|https://github.com/Perl/perl5/pull/20063>],
+[L<GH #20077|https://github.com/Perl/perl5/pull/20077>].
 
 =item *
 
 Creating an anonymous sub no longer generates an C<srefgen> op, the
 reference generation is now done in the C<anoncode> or C<anonconst>
-op, saving runtime.  [github #20290]
+op, saving runtime. [L<GH #20290|https://github.com/Perl/perl5/pull/20290>]
 
 =back
 
@@ -384,19 +398,411 @@ op, saving runtime.  [github #20290]
 
 =item *
 
-Added the C<is_tainted()> builtin function. [L<github #19854|https://github.com/Perl/perl5/issues/19854>]
+Added the C<is_tainted()> builtin function. [L<GH #19854|https://github.com/Perl/perl5/issues/19854>]
 
 =item *
 
-Added the C<export_lexically()> builtin function as per PPC 0020. [L<github #19895|https://github.com/Perl/perl5/issues/19895>]
+Added the C<export_lexically()> builtin function as per L<PPC 0020|https://github.com/Perl/PPCs/blob/main/ppcs/ppc0020-lexical-export.md>. [L<GH #19895|https://github.com/Perl/perl5/issues/19895>]
 
 =item *
 
-Support for PPC 0018, C<use feature "module_true";> has been added to
+Support for L<PPC 0018|https://github.com/Perl/PPCs/blob/main/ppcs/ppc0018-module-true.md>, C<use feature "module_true";> has been added to
 the default feature bundle for v5.38 and later. It may also be used
 explicitly. When enabled inside of a module the module does not need
 to return true explicitly, and in fact the return will be forced to
 a simple true value regardless of what it originally was.
+
+=item *
+
+L<Attribute::Handlers> has been upgraded from version 1.02 to 1.03.
+
+=item *
+
+L<attributes> has been upgraded from version 0.34 to 0.35.
+
+=item *
+
+L<autodie> has been upgraded from version 2.34 to 2.36.
+
+=item *
+
+L<B> has been upgraded from version 1.83 to 1.88.
+
+=item *
+
+L<B::Concise> has been upgraded from version 1.006 to 1.007.
+
+=item *
+
+L<B::Deparse> has been upgraded from version 1.64 to 1.74.
+
+=item *
+
+L<Benchmark> has been upgraded from version 1.23 to 1.24.
+
+=item *
+
+L<bignum> has been upgraded from version 0.65 to 0.66.
+
+=item *
+
+L<Carp> has been upgraded from version 1.52 to 1.54.
+
+=item *
+
+L<Class::Struct> has been upgraded from version 0.66 to 0.68.
+
+=item *
+
+L<Compress::Raw::Bzip2> has been upgraded from version 2.103 to 2.204_001.
+
+=item *
+
+L<Compress::Raw::Zlib> has been upgraded from version 2.105 to 2.204_001.
+
+=item *
+
+L<Config::Perl::V> has been upgraded from version 0.33 to 0.36.
+
+=item *
+
+L<CPAN> has been upgraded from version 2.33 to 2.36.
+
+=item *
+
+L<Data::Dumper> has been upgraded from version 2.184 to 2.188.
+
+=item *
+
+L<DB_File> has been upgraded from version 1.857 to 1.858.
+
+=item *
+
+L<Devel::Peek> has been upgraded from version 1.32 to 1.33.
+
+=item *
+
+L<Devel::PPPort> has been upgraded from version 3.68 to 3.71.
+
+=item *
+
+L<Digest::MD5> has been upgraded from version 2.58 to 2.58_01.
+
+=item *
+
+L<Digest::SHA> has been upgraded from version 6.02 to 6.04.
+
+=item *
+
+L<DynaLoader> has been upgraded from version 1.52 to 1.54.
+
+=item *
+
+L<Encode> has been upgraded from version 3.17 to 3.19.
+
+=item *
+
+L<encoding::warnings> has been upgraded from version 0.13 to 0.14.
+
+=item *
+
+L<Env> has been upgraded from version 1.05 to 1.06.
+
+=item *
+
+L<Errno> has been upgraded from version 1.36 to 1.37.
+
+=item *
+
+L<experimental> has been upgraded from version 0.028 to 0.031.
+
+=item *
+
+L<ExtUtils::CBuilder> has been upgraded from version 0.280236 to 0.280238.
+
+=item *
+
+L<ExtUtils::Install> has been upgraded from version 2.20 to 2.22.
+
+=item *
+
+L<ExtUtils::MakeMaker> has been upgraded from version 7.64 to 7.70.
+
+=item *
+
+L<ExtUtils::Miniperl> has been upgraded from version 1.11 to 1.13.
+
+=item *
+
+L<ExtUtils::ParseXS> has been upgraded from version 3.45 to 3.51.
+
+=item *
+
+L<ExtUtils::PL2Bat> has been upgraded from version 0.004 to 0.005.
+
+=item *
+
+L<ExtUtils::Typemaps> has been upgraded from version 3.45 to 3.51.
+
+=item *
+
+L<feature> has been upgraded from version 1.72 to 1.82.
+
+=item *
+
+L<File::Basename> has been upgraded from version 2.85 to 2.86.
+
+=item *
+
+L<File::Copy> has been upgraded from version 2.39 to 2.41.
+
+=item *
+
+L<File::Find> has been upgraded from version 1.40 to 1.43.
+
+=item *
+
+L<File::Glob> has been upgraded from version 1.37 to 1.40.
+
+=item *
+
+L<File::Spec> has been upgraded from version 3.84 to 3.89.
+
+=item *
+
+L<File::stat> has been upgraded from version 1.12 to 1.13.
+
+=item *
+
+L<FileHandle> has been upgraded from version 2.03 to 2.05.
+
+=item *
+
+L<Filter::Util::Call> has been upgraded from version 1.60 to 1.64.
+
+=item *
+
+L<GDBM_File> has been upgraded from version 1.23 to 1.24.
+
+=item *
+
+L<Getopt::Long> has been upgraded from version 2.52 to 2.54.
+
+=item *
+
+L<Hash::Util> has been upgraded from version 0.28 to 0.30.
+
+=item *
+
+L<HTTP::Tiny> has been upgraded from version 0.080 to 0.083.
+
+=item *
+
+L<I18N::Langinfo> has been upgraded from version 0.21 to 0.22.
+
+=item *
+
+L<IO> has been upgraded from version 1.50 to 1.52.
+
+=item *
+
+IO-Compress has been upgraded from version 2.106 to 2.204.
+
+=item *
+
+L<IO::Socket::IP> has been upgraded from version 0.41 to 0.41_01.
+
+On DragonflyBSD, detect setsockopt() not actually clearing
+C<IPV6_V6ONLY> even when setsockopt() returns success.  [L<cpan
+#148293|https://rt.cpan.org/Ticket/Display.html?id=148293>]
+
+=item *
+
+L<IO::Zlib> has been upgraded from version 1.11 to 1.14.
+
+=item *
+
+L<JSON::PP> has been upgraded from version 4.07 to 4.16.
+
+=item *
+
+libnet has been upgraded from version 3.14 to 3.15.
+
+=item *
+
+L<Locale::Maketext> has been upgraded from version 1.31 to 1.33.
+
+=item *
+
+L<Math::BigInt> has been upgraded from version 1.999830 to 1.999837.
+
+=item *
+
+L<Math::BigInt::FastCalc> has been upgraded from version 0.5012 to 0.5013.
+
+=item *
+
+L<Math::BigRat> has been upgraded from version 0.2621 to 0.2624.
+
+=item *
+
+L<Math::Complex> has been upgraded from version 1.5902 to 1.62.
+
+=item *
+
+L<Memoize> has been upgraded from version 1.03_01 to 1.16.
+
+=item *
+
+L<MIME::Base64> has been upgraded from version 3.16 to 3.16_01.
+
+=item *
+
+L<Module::CoreList> has been upgraded from version 5.20220520 to 5.20230520.
+
+=item *
+
+L<mro> has been upgraded from version 1.26 to 1.28.
+
+=item *
+
+L<NDBM_File> has been upgraded from version 1.15 to 1.16.
+
+=item *
+
+L<Net::Ping> has been upgraded from version 2.74 to 2.76.
+
+=item *
+
+L<ODBM_File> has been upgraded from version 1.17 to 1.18.
+
+=item *
+
+L<Opcode> has been upgraded from version 1.57 to 1.64.
+
+=item *
+
+L<overload> has been upgraded from version 1.35 to 1.37.
+
+=item *
+
+L<parent> has been upgraded from version 0.238 to 0.241.
+
+=item *
+
+L<PerlIO::via::QuotedPrint> has been upgraded from version 0.09 to 0.10.
+
+=item *
+
+L<Pod::Checker> has been upgraded from version 1.74 to 1.75.
+
+=item *
+
+L<Pod::Html> has been upgraded from version 1.33 to 1.34.
+
+=item *
+
+L<Pod::Usage> has been upgraded from version 2.01 to 2.03.
+
+=item *
+
+L<podlators> has been upgraded from version 4.14 to 5.01.
+
+=item *
+
+L<POSIX> has been upgraded from version 2.03 to 2.13.
+
+=item *
+
+L<re> has been upgraded from version 0.43 to 0.44.
+
+=item *
+
+L<Safe> has been upgraded from version 2.43 to 2.44.
+
+=item *
+
+L<Scalar::Util> has been upgraded from version 1.62 to 1.63.
+
+=item *
+
+L<SDBM_File> has been upgraded from version 1.15 to 1.17.
+
+=item *
+
+L<Socket> has been upgraded from version 2.033 to 2.036.
+
+=item *
+
+L<Storable> has been upgraded from version 3.26 to 3.32.
+
+=item *
+
+L<Sys::Hostname> has been upgraded from version 1.24 to 1.25.
+
+=item *
+
+L<Term::Cap> has been upgraded from version 1.17 to 1.18.
+
+=item *
+
+L<Test::Simple> has been upgraded from version 1.302190 to 1.302194.
+
+=item *
+
+L<Text::Balanced> has been upgraded from version 2.04 to 2.06.
+
+=item *
+
+L<threads> has been upgraded from version 2.27 to 2.36.
+
+=item *
+
+L<threads::shared> has been upgraded from version 1.64 to 1.68.
+
+=item *
+
+L<Tie::File> has been upgraded from version 1.06 to 1.07.
+
+=item *
+
+L<Time::HiRes> has been upgraded from version 1.9770 to 1.9775.
+
+=item *
+
+L<Time::Piece> has been upgraded from version 1.3401 to 1.3401_01.
+
+=item *
+
+L<Unicode::Normalize> has been upgraded from version 1.31 to 1.32.
+
+=item *
+
+L<UNIVERSAL> has been upgraded from version 1.14 to 1.15.
+
+=item *
+
+L<User::grent> has been upgraded from version 1.03 to 1.04.
+
+=item *
+
+L<User::pwent> has been upgraded from version 1.01 to 1.02.
+
+=item *
+
+L<utf8> has been upgraded from version 1.24 to 1.25.
+
+=item *
+
+L<warnings> has been upgraded from version 1.58 to 1.65.
+
+=item *
+
+L<XS::APItest> has been upgraded from version 1.22 to 1.32.
+
+=item *
+
+L<XSLoader> has been upgraded from version 0.31 to 0.32.
 
 =back
 
@@ -643,6 +1049,12 @@ L<Too many nested BEGIN blocks, maximum of %d allowed|perldiag/"Too many nested 
 =item *
 
 L<Execution of %s aborted due to compilation errors.|perldiag/"Execution of %s aborted due to compilation errors.">
+
+=item *
+
+L<Can't locate object method "INC", nor "INCDIR" nor string overload via
+package "%s" %s in @INC|perldiag/"Can't locate object method "INC", nor
+"INCDIR" nor string overload via package "%s" %s in @INC">
 
 =item *
 
@@ -1097,7 +1509,7 @@ L<Smartmatch is deprecated|perldiag/"Smartmatch is deprecated"> replaces C<Smart
 
 C<make -j6 minitest> could fail due to a build conflict in building
 C<$(MINIPERL_EXE)> between the main make process and a child process.
-[github #19829]
+[L<GH #19829|https://github.com/Perl/perl5/issues/19829>]
 
 =item *
 
@@ -1105,7 +1517,7 @@ Properly populate osvers on Dragonfly BSD when the hostname isn't set.
 
 =item *
 
-Fix typos for C99 macro name PRIX64.
+Fix typos for C99 macro name C<PRIX64>.
 
 =item *
 
@@ -1113,7 +1525,7 @@ Remove ancient and broken GCC for VMS support
 
 =item *
 
-Remove vestigial reference to /VAXC qualifier
+Remove vestigial reference to C</VAXC> qualifier
 
 =item *
 
@@ -1180,14 +1592,16 @@ machines.  Its final release was in 1995.
 
 =item DragonflyBSD
 
-Skip tests to workaround an apparent bug in setproctitle().  [L<github #19894|https://github.com/Perl/perl5/issues/19894>]
+Skip tests to workaround an apparent bug in C<setproctitle()>.
+[L<GH #19894|https://github.com/Perl/perl5/issues/19894>]
 
 =item FreeBSD
 
 FreeBSD no longer uses thread-safe locale operations, to avoid L<a bug in
 FreeBSD|https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=265950>
 
-Replace the first part of archname with `uname -p` [L<github #19791|https://github.com/Perl/perl5/issues/19791>]
+Replace the first part of archname with C<uname -p>
+[L<GH #19791|https://github.com/Perl/perl5/issues/19791>]
 
 =item Solaris
 
@@ -1202,28 +1616,34 @@ Update Synology Readme for DSM 7.
 Fix win32 memory alignment needed for gcc-12 from vmem.h.
 
 utimes() on Win32 would print a message to stderr if it failed to
-convert a supplied C<time_t> to to a C<FILETIME>. [github #19668]
+convert a supplied C<time_t> to to a C<FILETIME>.
+[L<GH #19668|https://github.com/Perl/perl5/issues/19668>]
 
 In some cases, timestamps returned by L<stat()|perlfunc/stat> and
 L<lstat()|perlfunc/lstat> failed to take daylight saving time into account.
 [L<GH #20018|https://github.com/Perl/perl5/issues/20018>]
 [L<GH #20061|https://github.com/Perl/perl5/issues/20061>]
 
-stat() now works on AF_UNIX socket files. [github #20204]
+stat() now works on C<AF_UNIX> socket files.
+[L<GH #20204|https://github.com/Perl/perl5/issues/20204>]
 
 readlink() now returns the C<PrintName> from a symbolic link reparse
 point instead of the C<SubstituteName>, which should make it better
-match the name the link was created with.  [github #20271]
+match the name the link was created with.
+[L<GH #20271|https://github.com/Perl/perl5/pull/20271>]
 
 lstat() on Windows now returns the length of the link target as the
-size of the file, as it does on POSIX systems.  [github #20476]
+size of the file, as it does on POSIX systems.
+[L<GH #20476|https://github.com/Perl/perl5/issues/20476>]
 
 symlink() on Windows now replaces any C</> in the target with C<\>,
 since Windows does not recognise C</> in symbolic links.  The reverse
-translation is B<not> done by readlink().  [github #20506]
+translation is B<not> done by readlink().
+[L<GH #20506|https://github.com/Perl/perl5/issues/20506>]
 
 symlink() where the target was an absolute path to a directory was
-incorrectly created as a file symbolic link.  [github #20533]
+incorrectly created as a file symbolic link.
+[L<GH #20533|https://github.com/Perl/perl5/issues/20533>]
 
 C<POSIX::dup2> no longer creates broken sockets. [L<GH
 #20920|https://github.com/Perl/perl5/issues/20920>]
@@ -1313,8 +1733,8 @@ change merely brings that to the other platforms.
 
 =item *
 
-New formatting symbols were added for printing values declared as U32 or
-I32:
+New formatting symbols were added for printing values declared as C<U32> or
+C<I32>:
 
 =over
 
@@ -1393,7 +1813,7 @@ Fix definition of C<Perl_atof>.
 
 =item *
 
-Fix undefined behavior with overflow related OPTIMIZE_INFTY and delta
+Fix undefined behavior with overflow related C<OPTIMIZE_INFTY> and delta
 in F<regcomp.c>.
 
 =item *
@@ -1405,7 +1825,8 @@ Fix regnode pointer alignment issue in F<regcomp.h>.
 The C<CVf_METHOD> CV flag and associated C<CvMETHOD> macro has been renamed to
 C<CVf_NOWARN_AMBIGUOUS> and C<CvNOWARN_AMBIGUOUS>. This closer reflects its
 actual behaviour (it suppresses a warning that would otherwise be generated
-about ambiguous names), in order to be less confusing with a possible upcoming
+about ambiguous names), in order to be less confusing with C<CvIsMETHOD>,
+which indicates that a CV is a C<method> subroutine relating to the C<class>
 feature.
 
 =item *
@@ -1462,23 +1883,23 @@ value will not be magical.
 The C<SSNEW()>, C<SSNEWt()>, C<SSNEWa()> and C<SSNEWat()> APIs now
 return a C<SSize_t> value.  The C<SSPTR()> and C<SSPTRt()> macros now
 expect a C<SSize_t> parameter, and enforce that on debugging builds.
-[github #20411]
+[L<GH #20411|https://github.com/Perl/perl5/issues/20411>]
 
 =item *
 
 Filenames in cops are now refcounted under threads.
 Under threads we were copying the filenames into each opcode. This is because in
 theory opcodes created in one thread can be destroyed in another.
-The change adds a new struct/type RCPV, which is a refcounted
+The change adds a new struct/type C<RCPV>, which is a refcounted
 string using shared memory. This is implemented in such a way that code
 that previously used a char * can continue to do so, as the refcounting
 data is located a specific offset before the char * pointer itself.
 
 =item *
 
-Added HvNAMEf and HvNAMEf_QUOTEDPREFIX special formats. They take an HV *
-as an argument and use C<HvNAME()> and related macros to determine the string,
-its length, and whether it is utf8.
+Added C<HvNAMEf> and C<HvNAMEf_QUOTEDPREFIX> special formats. They take an
+C<HV *> as an argument and use C<HvNAME()> and related macros to determine the
+string, its length, and whether it is utf8.
 
 =item *
 
@@ -1560,7 +1981,7 @@ interpreter panic; e.g.
 =item *
 
 Disabling the C<bareword_filehandles> feature no longer treats C<< print
-Class->method >> as an error.  [L<github #19704|https://github.com/Perl/perl5/issues/19704>]
+Class->method >> as an error.  [L<GH #19704|https://github.com/Perl/perl5/issues/19704>]
 
 =item *
 
@@ -1575,13 +1996,13 @@ In addition, where the Perl subroutine is freed at the same time:
 this formerly could lead to crashes if the XS subroutine tried to use the
 value of C<PL_op>, since this was being set to NULL. This is now fixed.
 
-[L<github #19936|https://github.com/Perl/perl5/issues/19936>]
+[L<GH #19936|https://github.com/Perl/perl5/issues/19936>]
 
 =item *
 
 setsockopt() now uses the mechanism added in 5.36 to better
 distinguish between numeric and string values supplied as the
-C<OPTVAL> parameter.  [L<github #18761|https://github.com/Perl/perl5/issues/18761>]
+C<OPTVAL> parameter.  [L<GH #18761|https://github.com/Perl/perl5/issues/18761>]
 
 =item *
 
@@ -1589,20 +2010,21 @@ C<OPTVAL> parameter.  [L<github #18761|https://github.com/Perl/perl5/issues/1876
 255. Additionally, for code points 128-255, this operator will now always
 give the corresponding octet to the OS, regardless of how Perl stores
 such code points in memory. (Previously Perl leaked its internal string
-storage to the OS.) [L<github #19882|https://github.com/Perl/perl5/issues/19882>]
+storage to the OS.) [L<GH #19882|https://github.com/Perl/perl5/issues/19882>]
 
 =item *
 
-Fix panic issue from C<val {} inside /(?{...})/> [L<github #19390|https://github.com/Perl/perl5/issues/19390>]
+Fix panic issue from C<val {} inside /(?{...})/> [L<GH #19390|https://github.com/Perl/perl5/issues/19390>]
 
 =item *
 
-Fix multiple compiler warnings from regexp.c., locale.c [L<github #19915|https://github.com/Perl/perl5/issues/19915>]
+Fix multiple compiler warnings from F<regexp.c>, F<locale.c>
+[L<GH #19915|https://github.com/Perl/perl5/issues/19915>]
 
 =item *
 
-Fix a bug with querying locales on platforms that don't have LC_NUMERIC
-[L<github #19890|https://github.com/Perl/perl5/issues/19890>]
+Fix a bug with querying locales on platforms that don't have C<LC_NUMERIC>
+[L<GH #19890|https://github.com/Perl/perl5/issues/19890>]
 
 =item *
 
@@ -1644,7 +2066,7 @@ switch wouldn't be freed.
 
 Correctly handle C<OP_ANONCODE> ops generated by CPAN modules that
 don't include the OPf_REF flag when propagating lvalue context.
-L<[GH #20532]|https://github.com/Perl/perl5/pull/20532>
+[L<GH #20532|https://github.com/Perl/perl5/pull/20532>]
 
 =item *
 
@@ -1665,7 +2087,7 @@ input is returned unchanged.
 Double FETCH during stringification of tied scalars returning an
 overloaded object have been fixed. The FETCH method should only be
 called once, but prior to this release was actually called twice.
-L<[GH #20574]|https://github.com/Perl/perl5/pull/20574>
+[L<GH #20574|https://github.com/Perl/perl5/pull/20574>]
 
 =item *
 
